@@ -1,0 +1,2 @@
+/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/build/CMakeFiles/edit_cache.dir
+/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/build/CMakeFiles/rebuild_cache.dir
