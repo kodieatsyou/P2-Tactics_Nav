@@ -150,7 +150,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=Project
+CMAKE_PROJECT_NAME:STATIC=tactics_nav
 
 //Value Computed by CMake
 CMAKE_PROJECT_SPDX_LICENSE:STATIC=
@@ -228,6 +228,15 @@ Project_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
 Project_SOURCE_DIR:STATIC=/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav
+
+//Value Computed by CMake
+tactics_nav_BINARY_DIR:STATIC=/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/build
+
+//Value Computed by CMake
+tactics_nav_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+tactics_nav_SOURCE_DIR:STATIC=/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav
 
 
 ########################

@@ -11,7 +11,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: Project
+# Project: tactics_nav
 # Configurations: Debug
 # =============================================================================
 
@@ -40,6 +40,120 @@ include CMakeFiles/rules.ninja
 # Logical path to working directory; prefix for absolute paths.
 
 cmake_ninja_workdir = /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/build/
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target tactics_nav
+
+
+#############################################
+# Order-only phony target for tactics_nav
+
+build cmake_object_order_depends_target_tactics_nav: phony || .
+
+build CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o: CXX_COMPILER__tactics_nav_unscanned_Debug /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/src/GridMap.cpp || cmake_object_order_depends_target_tactics_nav
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/include"
+  OBJECT_DIR = CMakeFiles/tactics_nav.dir
+  OBJECT_FILE_DIR = CMakeFiles/tactics_nav.dir/src
+  TARGET_SUPPORT_DIR = CMakeFiles/tactics_nav.dir
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target tactics_nav
+
+
+#############################################
+# Link the static library libtactics_nav.a
+
+build libtactics_nav.a: CXX_STATIC_LIBRARY_LINKER__tactics_nav_Debug CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o
+  CONFIG = Debug
+  LANGUAGE_COMPILE_FLAGS = -g
+  OBJECT_DIR = CMakeFiles/tactics_nav.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = libtactics_nav.a
+  TARGET_PDB = tactics_nav.a.dbg
+  TARGET_SUPPORT_DIR = CMakeFiles/tactics_nav.dir
+
+# =============================================================================
+# Object build statements for EXECUTABLE target tactics_demo
+
+
+#############################################
+# Order-only phony target for tactics_demo
+
+build cmake_object_order_depends_target_tactics_demo: phony || cmake_object_order_depends_target_tactics_nav
+
+build CMakeFiles/tactics_demo.dir/demo/main.cpp.o: CXX_COMPILER__tactics_demo_unscanned_Debug /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/demo/main.cpp || cmake_object_order_depends_target_tactics_demo
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/tactics_demo.dir/demo/main.cpp.o.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/include"
+  OBJECT_DIR = CMakeFiles/tactics_demo.dir
+  OBJECT_FILE_DIR = CMakeFiles/tactics_demo.dir/demo
+  TARGET_SUPPORT_DIR = CMakeFiles/tactics_demo.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target tactics_demo
+
+
+#############################################
+# Link the executable tactics_demo
+
+build tactics_demo: CXX_EXECUTABLE_LINKER__tactics_demo_Debug CMakeFiles/tactics_demo.dir/demo/main.cpp.o | libtactics_nav.a || libtactics_nav.a
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/tactics_demo.dir/link.d
+  FLAGS = -g
+  LINK_FLAGS = -Wl,--dependency-file=CMakeFiles/tactics_demo.dir/link.d
+  LINK_LIBRARIES = libtactics_nav.a
+  OBJECT_DIR = CMakeFiles/tactics_demo.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = tactics_demo
+  TARGET_PDB = tactics_demo.dbg
+  TARGET_SUPPORT_DIR = CMakeFiles/tactics_demo.dir
+
+# =============================================================================
+# Object build statements for EXECUTABLE target tactics_tests
+
+
+#############################################
+# Order-only phony target for tactics_tests
+
+build cmake_object_order_depends_target_tactics_tests: phony || cmake_object_order_depends_target_tactics_nav
+
+build CMakeFiles/tactics_tests.dir/tests/test_path.cpp.o: CXX_COMPILER__tactics_tests_unscanned_Debug /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/tests/test_path.cpp || cmake_object_order_depends_target_tactics_tests
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/tactics_tests.dir/tests/test_path.cpp.o.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/include"
+  OBJECT_DIR = CMakeFiles/tactics_tests.dir
+  OBJECT_FILE_DIR = CMakeFiles/tactics_tests.dir/tests
+  TARGET_SUPPORT_DIR = CMakeFiles/tactics_tests.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target tactics_tests
+
+
+#############################################
+# Link the executable tactics_tests
+
+build tactics_tests: CXX_EXECUTABLE_LINKER__tactics_tests_Debug CMakeFiles/tactics_tests.dir/tests/test_path.cpp.o | libtactics_nav.a || libtactics_nav.a
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles/tactics_tests.dir/link.d
+  FLAGS = -g
+  LINK_FLAGS = -Wl,--dependency-file=CMakeFiles/tactics_tests.dir/link.d
+  LINK_LIBRARIES = libtactics_nav.a
+  OBJECT_DIR = CMakeFiles/tactics_tests.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = tactics_tests
+  TARGET_PDB = tactics_tests.dbg
+  TARGET_SUPPORT_DIR = CMakeFiles/tactics_tests.dir
+
 
 #############################################
 # Utility command for edit_cache
@@ -67,6 +181,8 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
+build tactics_nav: phony libtactics_nav.a
+
 # =============================================================================
 # Folder targets.
 
@@ -75,7 +191,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 #############################################
 # Folder: /run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/build
 
-build all: phony
+build all: phony libtactics_nav.a tactics_demo tactics_tests
 
 # =============================================================================
 # Built-in targets
@@ -84,14 +200,14 @@ build all: phony
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/build/cmake_install.cmake: RERUN_CMAKE | /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/CMakeLists.txt /usr/share/cmake/Modules/CMakeCInformation.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-C.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-C.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-C.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.1/CMakeCCompiler.cmake CMakeFiles/4.2.1/CMakeCXXCompiler.cmake CMakeFiles/4.2.1/CMakeSystem.cmake
+build build.ninja /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/build/cmake_install.cmake: RERUN_CMAKE | /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/CMakeLists.txt /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.1/CMakeCXXCompiler.cmake CMakeFiles/4.2.1/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/CMakeLists.txt /usr/share/cmake/Modules/CMakeCInformation.cmake /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-C.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-C.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-C.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-C.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.1/CMakeCCompiler.cmake CMakeFiles/4.2.1/CMakeCXXCompiler.cmake CMakeFiles/4.2.1/CMakeSystem.cmake: phony
+build /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/CMakeLists.txt /usr/share/cmake/Modules/CMakeCXXInformation.cmake /usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake /usr/share/cmake/Modules/CMakeGenericSystem.cmake /usr/share/cmake/Modules/CMakeInitializeConfigs.cmake /usr/share/cmake/Modules/CMakeLanguageInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake /usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake /usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake /usr/share/cmake/Modules/Compiler/GNU-CXX.cmake /usr/share/cmake/Modules/Compiler/GNU.cmake /usr/share/cmake/Modules/Internal/CMakeCXXLinkerInformation.cmake /usr/share/cmake/Modules/Internal/CMakeCommonLinkerInformation.cmake /usr/share/cmake/Modules/Linker/GNU-CXX.cmake /usr/share/cmake/Modules/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/GNU.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linker/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake /usr/share/cmake/Modules/Platform/Linux-GNU.cmake /usr/share/cmake/Modules/Platform/Linux-Initialize.cmake /usr/share/cmake/Modules/Platform/Linux.cmake /usr/share/cmake/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/4.2.1/CMakeCXXCompiler.cmake CMakeFiles/4.2.1/CMakeSystem.cmake: phony
 
 
 #############################################
