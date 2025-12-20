@@ -100,19 +100,35 @@ CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/src/DynamicOccupancy.cpp" -o CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.s
 
+CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o: CMakeFiles/tactics_nav.dir/flags.make
+CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o: /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/src/Pathfinding.cpp
+CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o: CMakeFiles/tactics_nav.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o -MF CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o.d -o CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o -c "/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/src/Pathfinding.cpp"
+
+CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/src/Pathfinding.cpp" > CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.i
+
+CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/src/Pathfinding.cpp" -o CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.s
+
 # Object files for target tactics_nav
 tactics_nav_OBJECTS = \
 "CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o" \
-"CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.o"
+"CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.o" \
+"CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o"
 
 # External object files for target tactics_nav
 tactics_nav_EXTERNAL_OBJECTS =
 
 libtactics_nav.a: CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o
 libtactics_nav.a: CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.o
+libtactics_nav.a: CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o
 libtactics_nav.a: CMakeFiles/tactics_nav.dir/build.make
 libtactics_nav.a: CMakeFiles/tactics_nav.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX static library libtactics_nav.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libtactics_nav.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/tactics_nav.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tactics_nav.dir/link.txt --verbose=$(VERBOSE)
 

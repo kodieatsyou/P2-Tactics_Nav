@@ -1,2 +1,2 @@
-/usr/bin/ar qc libtactics_nav.a CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.o
+/usr/bin/ar qc libtactics_nav.a CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.o CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o
 /usr/bin/ranlib libtactics_nav.a

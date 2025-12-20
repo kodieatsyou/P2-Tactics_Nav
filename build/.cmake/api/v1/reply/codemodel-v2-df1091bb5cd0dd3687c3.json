@@ -7,21 +7,21 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "Git::Git::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Git__Git-0e46bc315fe91b2ac230.json",
+					"jsonFile" : "target-Git__Git-6ad91c4af4798988a58c.json",
 					"name" : "Git::Git",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "SDL2::SDL2::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-SDL2__SDL2-1ab16429abf84ae54b87.json",
+					"jsonFile" : "target-SDL2__SDL2-2e0df97fd45a8e8ff3b5.json",
 					"name" : "SDL2::SDL2",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "SDL2::SDL2main::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-SDL2__SDL2main-3c21bd9dd2acc434422c.json",
+					"jsonFile" : "target-SDL2__SDL2main-e0a6fdab09f61e394447.json",
 					"name" : "SDL2::SDL2main",
 					"projectIndex" : 0
 				}
@@ -79,21 +79,21 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "tactics_demo::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-tactics_demo-7586850dd0e54c374c49.json",
+					"jsonFile" : "target-tactics_demo-8a3a9e3c759b196db822.json",
 					"name" : "tactics_demo",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "tactics_nav::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-tactics_nav-005e35ddb9527cdbd0f1.json",
+					"jsonFile" : "target-tactics_nav-7b92fa240fcbc3f8ada1.json",
 					"name" : "tactics_nav",
 					"projectIndex" : 0
 				},
 				{
 					"directoryIndex" : 0,
 					"id" : "tactics_tests::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-tactics_tests-7e94fb215dc1d8b4df13.json",
+					"jsonFile" : "target-tactics_tests-881c8fe850f1475fe221.json",
 					"name" : "tactics_tests",
 					"projectIndex" : 0
 				}

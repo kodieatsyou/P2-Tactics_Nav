@@ -1829,6 +1829,7 @@ CMakeFiles/tactics_demo.dir/demo/main.cpp.o: /run/media/tanner/Whiterun/Soupbox/
   _deps/imgui-src/imgui.h \
   /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/include/tn/DynamicOccupancy.h \
   /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/include/tn/GridMap.h \
+  /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/include/tn/Pathfinding.h \
   /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/include/tn/Types.h \
   /usr/include/SDL2/SDL.h \
   /usr/include/SDL2/SDL_assert.h \
@@ -2277,6 +2278,8 @@ CMakeFiles/tactics_demo.dir/_deps/imgui-src/backends/imgui_impl_sdl2.cpp.o:
 /usr/include/c++/15.2.1/backward/binders.h:
 
 /usr/include/c++/15.2.1/algorithm:
+
+/run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/include/tn/Pathfinding.h:
 
 _deps/imgui-src/imgui_widgets.cpp:
 

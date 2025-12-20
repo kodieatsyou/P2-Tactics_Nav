@@ -276,6 +276,7 @@ CMakeFiles/tactics_demo.dir/demo/main.cpp.o: \
  /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/include/tn/Types.h \
  /usr/include/c++/15.2.1/cstdint \
  /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/include/tn/DynamicOccupancy.h \
+ /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/include/tn/Pathfinding.h \
  /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/build/_deps/imgui-src/imgui.h \
  /run/media/tanner/Whiterun/Soupbox/Project\ Folders/LarianPortfolio/P2-Tactics_Nav/build/_deps/imgui-src/imconfig.h \
  /usr/include/assert.h \

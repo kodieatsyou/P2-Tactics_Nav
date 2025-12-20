@@ -395,6 +395,30 @@ src/GridMap.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/tactics_nav.dir/build.make CMakeFiles/tactics_nav.dir/src/GridMap.cpp.s
 .PHONY : src/GridMap.cpp.s
 
+src/Pathfinding.o: src/Pathfinding.cpp.o
+.PHONY : src/Pathfinding.o
+
+# target to build an object file
+src/Pathfinding.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tactics_nav.dir/build.make CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o
+.PHONY : src/Pathfinding.cpp.o
+
+src/Pathfinding.i: src/Pathfinding.cpp.i
+.PHONY : src/Pathfinding.i
+
+# target to preprocess a source file
+src/Pathfinding.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tactics_nav.dir/build.make CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.i
+.PHONY : src/Pathfinding.cpp.i
+
+src/Pathfinding.s: src/Pathfinding.cpp.s
+.PHONY : src/Pathfinding.s
+
+# target to generate assembly for a file
+src/Pathfinding.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tactics_nav.dir/build.make CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.s
+.PHONY : src/Pathfinding.cpp.s
+
 tests/test_path.o: tests/test_path.cpp.o
 .PHONY : tests/test_path.o
 
@@ -460,6 +484,9 @@ help:
 	@echo "... src/GridMap.o"
 	@echo "... src/GridMap.i"
 	@echo "... src/GridMap.s"
+	@echo "... src/Pathfinding.o"
+	@echo "... src/Pathfinding.i"
+	@echo "... src/Pathfinding.s"
 	@echo "... tests/test_path.o"
 	@echo "... tests/test_path.i"
 	@echo "... tests/test_path.s"

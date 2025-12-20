@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(tactics_nav
     src/GridMap.cpp
     src/DynamicOccupancy.cpp
+    src/Pathfinding.cpp
 )
 
 target_include_directories(tactics_nav PUBLIC include)

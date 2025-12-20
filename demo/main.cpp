@@ -5,6 +5,7 @@
 #include <tn/GridMap.h>
 #include <tn/DynamicOccupancy.h>
 #include <tn/Types.h>
+#include <tn/Pathfinding.h>
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -28,6 +29,27 @@ static void DrawRect(SDL_Renderer *r, int x, int y, int w, int h, Uint8 rr, Uint
     SDL_SetRenderDrawColor(r, rr, gg, bb, aa);
     SDL_Rect rc{x, y, w, h};
     SDL_RenderDrawRect(r, &rc);
+}
+
+static SDL_Point TileCenterToScreen(tn::IVec2 t, int tileSize, int originX, int originY)
+{
+    return SDL_Point{
+        originX + t.x * tileSize + tileSize / 2,
+        originY + t.y * tileSize + tileSize / 2};
+}
+
+static void DrawPolyline(SDL_Renderer *r, const std::vector<tn::IVec2> &pts, int tileSize, int originX, int originY)
+{
+    if (pts.size() < 2)
+        return;
+    SDL_SetRenderDrawColor(r, 80, 200, 120, 255);
+
+    for (size_t i = 0; i + 1 < pts.size(); ++i)
+    {
+        SDL_Point a = TileCenterToScreen(pts[i], tileSize, originX, originY);
+        SDL_Point b = TileCenterToScreen(pts[i + 1], tileSize, originX, originY);
+        SDL_RenderDrawLine(r, a.x, a.y, b.x, b.y);
+    }
 }
 
 int main(int, char**) {
@@ -80,6 +102,17 @@ int main(int, char**) {
     tn::GridMap map(gridW, gridH);
     tn::DynamicOccupancy occ(gridW, gridH);
 
+    tn::IVec2 start(2, 2);
+    tn::IVec2 goal{map.Width() - 3, map.Height() - 3};
+
+    tn::PathSettings pathSettings{};
+    pathSettings.allowDiagonal = true;
+    pathSettings.preventCornerCuts = true;
+    pathSettings.allowPartial = true;
+    tn::PathFinder pathfinder(map.Width(), map.Height());
+    tn::PathResult pathResult{};
+    bool pathDirty = true;
+
     int tileSize = 22;
     int originX = 20;
     int originY = 20;
@@ -101,24 +134,58 @@ int main(int, char**) {
 
             if(io.WantCaptureMouse) continue;
 
-            if(e.type == SDL_MOUSEBUTTONDOWN) {
+            if (e.type == SDL_MOUSEBUTTONDOWN)
+            {
                 int mx, my;
                 SDL_GetMouseState(&mx, &my);
                 tn::IVec2 t = ScreenToTile(mx, my, tileSize, originX, originY);
 
-                if(map.InBounds(t)) {
-                    if(e.button.button == SDL_BUTTON_LEFT) {
-                        //Toggle wall with left mouse
-                        bool blocked = map.IsBlockedStatic(t);
-                        map.SetBlocked(t, !blocked);
+                if (!map.InBounds(t))
+                    continue;
 
-                        if(!blocked == true) { occ.SetOccupied(t, false); }
-                    }
-                    else if(e.button.button == SDL_BUTTON_RIGHT) {
-                        if(!map.IsBlockedStatic(t)) {
-                            bool occupied = occ.IsOccupied(t);
-                            occ.SetOccupied(t, !occupied);
+                const bool shift = (SDL_GetModState() & KMOD_SHIFT) != 0;
+
+                //Shift to use path tools
+                if (shift)
+                {
+                    if (e.button.button == SDL_BUTTON_LEFT)
+                    {
+                        if (!map.IsBlockedStatic(t) && !occ.IsOccupied(t))
+                        {
+                            start = t;
+                            pathDirty = true;
                         }
+                    }
+                    else if (e.button.button == SDL_BUTTON_RIGHT)
+                    {
+                        if (!map.IsBlockedStatic(t) && !occ.IsOccupied(t))
+                        {
+                            goal = t;
+                            pathDirty = true;
+                        }
+                    }
+                    continue;
+                }
+
+                //Non shift to use edit tools
+                if (e.button.button == SDL_BUTTON_LEFT)
+                {
+                    bool blocked = map.IsBlockedStatic(t);
+                    map.SetBlocked(t, !blocked);
+
+                    if (!blocked)
+                    {
+                        occ.SetOccupied(t, false);
+                    }
+                    pathDirty = true;
+                }
+                else if (e.button.button == SDL_BUTTON_RIGHT)
+                {
+                    if (!map.IsBlockedStatic(t))
+                    {
+                        bool occupied = occ.IsOccupied(t);
+                        occ.SetOccupied(t, !occupied);
+                        pathDirty = true;
                     }
                 }
             }
@@ -135,13 +202,23 @@ int main(int, char**) {
                 if(buttons & SDL_BUTTON_LMASK) {
                     map.SetBlocked(t, true);
                     occ.SetOccupied(t, false);
+                    pathDirty = true;
                 }
 
                 if (buttons & SDL_BUTTON_RMASK)
                 {
-                    if(!map.IsBlockedStatic(t)) occ.SetOccupied(t, true);
+                    if(!map.IsBlockedStatic(t)){
+                        occ.SetOccupied(t, true);
+                        pathDirty = true;
+                    }
                 }
             }
+        }
+
+        if (pathDirty)
+        {
+            pathResult = pathfinder.FindPath(map, occ, start, goal, pathSettings);
+            pathDirty = false;
         }
 
         ImGui_ImplSDLRenderer2_NewFrame();
@@ -154,6 +231,21 @@ int main(int, char**) {
         ImGui::SliderInt("Origin X", &originX, 0, 200);
         ImGui::SliderInt("Origin Y", &originY, 0, 200);
         ImGui::Checkbox("Show Grid Lines", &showGridLines);
+        ImGui::Separator();
+        ImGui::Text("Shift+LMB: Start | Shift+RMB: Goal");
+        ImGui::Text("Start (%d,%d)  Goal (%d,%d)", start.x, start.y, goal.x, goal.y);
+
+        bool changed = false;
+        changed |= ImGui::Checkbox("Diagonal", &pathSettings.allowDiagonal);
+        changed |= ImGui::Checkbox("Prevent Corner Cut", &pathSettings.preventCornerCuts);
+        changed |= ImGui::Checkbox("Allow Partial", &pathSettings.allowPartial);
+        if (changed)
+            pathDirty = true;
+
+        ImGui::Text("Path: %s | Points: %d | Cost: %.2f",
+                    pathResult.reachedGoal ? "reached" : "partial",
+                    (int)pathResult.points.size(),
+                    pathResult.totalCost);
 
         int mx, my;
         SDL_GetMouseState(&mx, &my);
@@ -208,6 +300,22 @@ int main(int, char**) {
                 DrawRect(renderer, sx, sy, tileSize, tileSize, 220, 220, 220, 255);
             }
         }
+
+        // Start/goal tile highlight
+        auto drawTileOutline = [&](tn::IVec2 p, Uint8 r, Uint8 g, Uint8 b)
+        {
+            int sx = originX + p.x * tileSize;
+            int sy = originY + p.y * tileSize;
+            SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+            SDL_Rect rc{sx, sy, tileSize, tileSize};
+            SDL_RenderDrawRect(renderer, &rc);
+        };
+
+        drawTileOutline(start, 90, 180, 255);
+        drawTileOutline(goal, 255, 200, 90);
+
+        // Path polyline
+        DrawPolyline(renderer, pathResult.points, tileSize, originX, originY);
 
         ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
         SDL_RenderPresent(renderer);
