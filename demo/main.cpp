@@ -7,6 +7,7 @@
 #include <tn/Types.h>
 #include <tn/Pathfinding.h>
 #include "tn/Reachability.h"
+#include "tn/LOS.h"
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -106,6 +107,7 @@ int main(int, char**) {
     tn::IVec2 start(2, 2);
     tn::IVec2 goal{map.Width() - 3, map.Height() - 3};
 
+    //Path settings
     tn::PathSettings pathSettings{};
     pathSettings.allowDiagonal = true;
     pathSettings.preventCornerCuts = true;
@@ -114,6 +116,7 @@ int main(int, char**) {
     tn::PathResult pathResult{};
     bool pathDirty = true;
 
+    //Reach settings
     tn::ReachSettings reachSettings{};
     reachSettings.allowDiagonal = true;
     reachSettings.preventCornerCut = true;
@@ -122,6 +125,14 @@ int main(int, char**) {
     bool reachDirty = true;
     bool showReachableOverlay = true;
     bool showReachableGradient = true;
+
+    //LOS settings
+    bool showLOS = true;
+    tn::LOSSettings losSettings{};
+    losSettings.blockByStatic = true;
+    losSettings.blockByOccupancy = false;
+    losSettings.includeEndpoints = false;
+    tn::IVec2 losOrigin;
 
     int tileSize = 22;
     int originX = 20;
@@ -257,6 +268,7 @@ int main(int, char**) {
         ImGui::Text("Shift+LMB: Start | Shift+RMB: Goal");
         ImGui::Text("Start (%d,%d)  Goal (%d,%d)", start.x, start.y, goal.x, goal.y);
 
+        //PATH
         bool changed = false;
         changed |= ImGui::Checkbox("Diagonal", &pathSettings.allowDiagonal);
         changed |= ImGui::Checkbox("Prevent Corner Cut", &pathSettings.preventCornerCuts);
@@ -269,6 +281,8 @@ int main(int, char**) {
                     (int)pathResult.points.size(),
                     pathResult.totalCost);
 
+
+        //REACH
         ImGui::Separator();
         ImGui::Checkbox("Show Reachable Overlay", &showReachableOverlay);
         ImGui::Checkbox("Reachable Gradient", &showReachableGradient);
@@ -285,6 +299,12 @@ int main(int, char**) {
             reachableCount += (v != 0);
         }
         ImGui::Text("Reachable tiles: %d | MaxCostInSet: %.2f", reachableCount, reachableSet.maxCostInSet);
+
+        //LOS
+        ImGui::Separator();
+        ImGui::Checkbox("Show LOS (hover)", &showLOS);
+        ImGui::Checkbox("LOS blocked by occupancy", &losSettings.blockByOccupancy);
+        ImGui::Checkbox("LOS include endpoints", &losSettings.includeEndpoints);
 
         int mx, my;
         SDL_GetMouseState(&mx, &my);
@@ -363,6 +383,60 @@ int main(int, char**) {
                 int sx = originX + t.x * tileSize;
                 int sy = originY + t.y * tileSize;
                 DrawRect(renderer, sx, sy, tileSize, tileSize, 220, 220, 220, 255);
+            }
+        }
+
+        if (showLOS)
+        {
+            int mx, my;
+            SDL_GetMouseState(&mx, &my);
+            tn::IVec2 hover = ScreenToTile(mx, my, tileSize, originX, originY);
+
+            losOrigin = start;
+
+            if (map.InBounds(hover) && map.InBounds(losOrigin))
+            {
+                tn::LOSRay ray = tn::TraceLOS(map, occ, losOrigin, hover, losSettings);
+
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                for (const auto &c : ray.cells)
+                {
+                    if (!map.InBounds(c))
+                        continue;
+                    int sx = originX + c.x * tileSize;
+                    int sy = originY + c.y * tileSize;
+
+                    // Clear = bluish blocked path = reddish
+                    if (!ray.blocked)
+                    {
+                        DrawFilledRect(renderer, sx + tileSize / 4, sy + tileSize / 4, tileSize / 2, tileSize / 2, 80, 140, 255, 90);
+                    }
+                    else
+                    {
+                        DrawFilledRect(renderer, sx + tileSize / 4, sy + tileSize / 4, tileSize / 2, tileSize / 2, 255, 110, 90, 90);
+                    }
+                }
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+
+                SDL_Point a = TileCenterToScreen(losOrigin, tileSize, originX, originY);
+                SDL_Point b = TileCenterToScreen(hover, tileSize, originX, originY);
+
+                if (!ray.blocked)
+                    SDL_SetRenderDrawColor(renderer, 80, 140, 255, 255);
+                else
+                    SDL_SetRenderDrawColor(renderer, 255, 110, 90, 255);
+
+                SDL_RenderDrawLine(renderer, a.x, a.y, b.x, b.y);
+
+                // If blocked mark the blocking tile
+                if (ray.blocked && map.InBounds(ray.blockedAt))
+                {
+                    int sx = originX + ray.blockedAt.x * tileSize;
+                    int sy = originY + ray.blockedAt.y * tileSize;
+                    SDL_SetRenderDrawColor(renderer, 255, 230, 120, 255);
+                    SDL_Rect rc{sx, sy, tileSize, tileSize};
+                    SDL_RenderDrawRect(renderer, &rc);
+                }
             }
         }
 
