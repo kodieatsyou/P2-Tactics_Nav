@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/tactics_tests.dir/link.d CMakeFiles/tactics_tests.dir/tests/test_path.cpp.o -o tactics_tests  libtactics_nav.a

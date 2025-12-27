@@ -6,6 +6,7 @@
 #include <tn/DynamicOccupancy.h>
 #include <tn/Types.h>
 #include <tn/Pathfinding.h>
+#include "tn/Reachability.h"
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -113,6 +114,15 @@ int main(int, char**) {
     tn::PathResult pathResult{};
     bool pathDirty = true;
 
+    tn::ReachSettings reachSettings{};
+    reachSettings.allowDiagonal = true;
+    reachSettings.preventCornerCut = true;
+    reachSettings.moveBudget = 12.0f;
+    tn::ReachableSet reachableSet{};
+    bool reachDirty = true;
+    bool showReachableOverlay = true;
+    bool showReachableGradient = true;
+
     int tileSize = 22;
     int originX = 20;
     int originY = 20;
@@ -154,6 +164,7 @@ int main(int, char**) {
                         {
                             start = t;
                             pathDirty = true;
+                            reachDirty = true;
                         }
                     }
                     else if (e.button.button == SDL_BUTTON_RIGHT)
@@ -162,6 +173,7 @@ int main(int, char**) {
                         {
                             goal = t;
                             pathDirty = true;
+                            reachDirty = true;
                         }
                     }
                     continue;
@@ -178,6 +190,7 @@ int main(int, char**) {
                         occ.SetOccupied(t, false);
                     }
                     pathDirty = true;
+                    reachDirty = true;
                 }
                 else if (e.button.button == SDL_BUTTON_RIGHT)
                 {
@@ -186,6 +199,7 @@ int main(int, char**) {
                         bool occupied = occ.IsOccupied(t);
                         occ.SetOccupied(t, !occupied);
                         pathDirty = true;
+                        reachDirty = true;
                     }
                 }
             }
@@ -203,6 +217,7 @@ int main(int, char**) {
                     map.SetBlocked(t, true);
                     occ.SetOccupied(t, false);
                     pathDirty = true;
+                    reachDirty = true;
                 }
 
                 if (buttons & SDL_BUTTON_RMASK)
@@ -210,6 +225,7 @@ int main(int, char**) {
                     if(!map.IsBlockedStatic(t)){
                         occ.SetOccupied(t, true);
                         pathDirty = true;
+                        reachDirty = true;
                     }
                 }
             }
@@ -219,6 +235,12 @@ int main(int, char**) {
         {
             pathResult = pathfinder.FindPath(map, occ, start, goal, pathSettings);
             pathDirty = false;
+        }
+
+        if (reachDirty)
+        {
+            reachableSet = tn::ComputeReachableSet(map, occ, start, reachSettings);
+            reachDirty = false;
         }
 
         ImGui_ImplSDLRenderer2_NewFrame();
@@ -246,6 +268,23 @@ int main(int, char**) {
                     pathResult.reachedGoal ? "reached" : "partial",
                     (int)pathResult.points.size(),
                     pathResult.totalCost);
+
+        ImGui::Separator();
+        ImGui::Checkbox("Show Reachable Overlay", &showReachableOverlay);
+        ImGui::Checkbox("Reachable Gradient", &showReachableGradient);
+
+        bool reachChanged = false;
+        reachChanged |= ImGui::Checkbox("Reach Diagonal", &reachSettings.allowDiagonal);
+        reachChanged |= ImGui::Checkbox("Reach Prevent Corner Cut", &reachSettings.preventCornerCut);
+        reachChanged |= ImGui::SliderFloat("Move Budget (cost)", &reachSettings.moveBudget, 1.0f, 60.0f, "%.1f");
+        if (reachChanged) {
+            reachDirty = true;
+        }
+        int reachableCount = 0;
+        for (uint8_t v : reachableSet.reachable) {
+            reachableCount += (v != 0);
+        }
+        ImGui::Text("Reachable tiles: %d | MaxCostInSet: %.2f", reachableCount, reachableSet.maxCostInSet);
 
         int mx, my;
         SDL_GetMouseState(&mx, &my);
@@ -280,6 +319,32 @@ int main(int, char**) {
                 //Occupied overlay
                 if(!map.IsBlockedStatic(p) && occ.IsOccupied(p)) {
                     DrawFilledRect(renderer, sx + 3, sy + 3, tileSize - 6, tileSize - 6, 160, 60, 60, 255);
+                }
+
+                //Reachable
+                if (showReachableOverlay && !map.IsBlockedStatic(p) && !occ.IsOccupied(p))
+                {
+                    int id = y * map.Width() + x;
+                    if (id >= 0 && id < (int)reachableSet.reachable.size() && reachableSet.reachable[id])
+                    {
+
+                        // Determine intensity: either constant or gradient by cost
+                        float tNorm = 1.0f;
+                        if (showReachableGradient && reachableSet.maxCostInSet > 0.0001f)
+                        {
+                            float c = reachableSet.costTo[id];
+                            tNorm = 1.0f - (c / reachableSet.maxCostInSet);
+                            if (tNorm < 0.15f)
+                                tNorm = 0.15f;
+                            if (tNorm > 1.0f)
+                                tNorm = 1.0f;
+                        }
+
+                        Uint8 a = (Uint8)(80 + 120 * tNorm);
+                        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                        DrawFilledRect(renderer, sx, sy, tileSize, tileSize, 70, 140, 90, a);
+                        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+                    }
                 }
 
                 if(showGridLines) {

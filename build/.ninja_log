@@ -1,0 +1,23 @@
+# ninja log v7
+2	12	1766796317189110000	CMakeFiles/tactics_tests.dir/tests/test_path.cpp.o	962afe82ee2bf38
+1	94	1766796317188110000	CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.o	b1b22bc8535da9bf
+1	200	1766796317188110000	CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o	8aebf8f010387841
+1	236	1766796317188110000	CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o	93c3f401db94bbd6
+236	261	1766796317423113200	libtactics_nav.a	fb849243906f176a
+262	296	1766796317449113500	tactics_tests	57682623afc8f026
+1	374	1766796317189110000	CMakeFiles/tactics_demo.dir/_deps/imgui-src/backends/imgui_impl_sdlrenderer2.cpp.o	998ef0781c3c9cd8
+1	460	1766796317188110000	CMakeFiles/tactics_demo.dir/_deps/imgui-src/backends/imgui_impl_sdl2.cpp.o	7f891e68bc1695db
+1	565	1766796317188110000	CMakeFiles/tactics_demo.dir/_deps/imgui-src/imgui_tables.cpp.o	a944ee23787d35ac
+1	659	1766796317188110000	CMakeFiles/tactics_demo.dir/_deps/imgui-src/imgui_demo.cpp.o	65b2774ca5b6ab5c
+1	751	1766796317188110000	CMakeFiles/tactics_demo.dir/_deps/imgui-src/imgui_draw.cpp.o	8dc14e8a2757a370
+1	1005	1766796317188110000	CMakeFiles/tactics_demo.dir/_deps/imgui-src/imgui_widgets.cpp.o	69471f2da850de42
+1	1135	1766796317188110000	CMakeFiles/tactics_demo.dir/_deps/imgui-src/imgui.cpp.o	db190dd9e737e978
+1	486	1766796364527740200	CMakeFiles/tactics_demo.dir/demo/main.cpp.o	37e96dc5b772a56e
+486	589	1766796365012746700	tactics_demo	6f46d4a81df774fd
+1	123	1766796773965189500	build.ninja	2c68b2b9c6bb2f58
+1	123	1766796773965189500	/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/build/cmake_install.cmake	2c68b2b9c6bb2f58
+1	203	1766796773969189600	CMakeFiles/tactics_nav.dir/src/Reachability.cpp.o	7ef04efe4ab94b28
+203	222	1766796774171192300	libtactics_nav.a	f808ce7f53b6dcac
+222	251	1766796774190192500	tactics_tests	57682623afc8f026
+1	417	1766796773969189600	CMakeFiles/tactics_demo.dir/demo/main.cpp.o	37e96dc5b772a56e
+417	518	1766796774385195100	tactics_demo	6f46d4a81df774fd

@@ -10,6 +10,7 @@ add_library(tactics_nav
     src/GridMap.cpp
     src/DynamicOccupancy.cpp
     src/Pathfinding.cpp
+    src/Reachability.cpp
 )
 
 target_include_directories(tactics_nav PUBLIC include)
