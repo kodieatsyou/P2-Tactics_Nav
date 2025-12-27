@@ -8,6 +8,7 @@
 #include <tn/Pathfinding.h>
 #include "tn/Reachability.h"
 #include "tn/LOS.h"
+#include "tn/InfluenceField.h"
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
@@ -134,6 +135,18 @@ int main(int, char**) {
     losSettings.includeEndpoints = false;
     tn::IVec2 losOrigin;
 
+    //Enemied
+    std::vector<tn::Enemy> enemies;
+
+    //Influence
+    tn::InfluenceSettings influenceSettings{};
+    influenceSettings.maxRange = 10.0f;
+    influenceSettings.baseThreat = 1.0f;
+    influenceSettings.gateByLOS = true;
+    tn::InfluenceField influence{};
+    bool influenceDirty = true;
+    bool showInfluence = true;
+
     int tileSize = 22;
     int originX = 20;
     int originY = 20;
@@ -165,6 +178,7 @@ int main(int, char**) {
                     continue;
 
                 const bool shift = (SDL_GetModState() & KMOD_SHIFT) != 0;
+                const bool ctrl = (SDL_GetModState() & KMOD_CTRL) != 0;
 
                 //Shift to use path tools
                 if (shift)
@@ -176,6 +190,7 @@ int main(int, char**) {
                             start = t;
                             pathDirty = true;
                             reachDirty = true;
+                            influenceDirty = true;
                         }
                     }
                     else if (e.button.button == SDL_BUTTON_RIGHT)
@@ -185,8 +200,17 @@ int main(int, char**) {
                             goal = t;
                             pathDirty = true;
                             reachDirty = true;
+                            influenceDirty = true;
                         }
                     }
+                    continue;
+                }
+
+                //Control for editing emeies
+                if (ctrl && e.button.button == SDL_BUTTON_LEFT)
+                {
+                    enemies.push_back({t, 1.0f});
+                    influenceDirty = true;
                     continue;
                 }
 
@@ -202,6 +226,7 @@ int main(int, char**) {
                     }
                     pathDirty = true;
                     reachDirty = true;
+                    influenceDirty = true;
                 }
                 else if (e.button.button == SDL_BUTTON_RIGHT)
                 {
@@ -211,6 +236,7 @@ int main(int, char**) {
                         occ.SetOccupied(t, !occupied);
                         pathDirty = true;
                         reachDirty = true;
+                        influenceDirty = true;
                     }
                 }
             }
@@ -229,6 +255,7 @@ int main(int, char**) {
                     occ.SetOccupied(t, false);
                     pathDirty = true;
                     reachDirty = true;
+                    influenceDirty = true;
                 }
 
                 if (buttons & SDL_BUTTON_RMASK)
@@ -237,6 +264,7 @@ int main(int, char**) {
                         occ.SetOccupied(t, true);
                         pathDirty = true;
                         reachDirty = true;
+                        influenceDirty = true;
                     }
                 }
             }
@@ -252,6 +280,12 @@ int main(int, char**) {
         {
             reachableSet = tn::ComputeReachableSet(map, occ, start, reachSettings);
             reachDirty = false;
+        }
+
+        if (influenceDirty)
+        {
+            influence = tn::ComputeInfluenceField(map, occ, enemies, influenceSettings);
+            influenceDirty = false;
         }
 
         ImGui_ImplSDLRenderer2_NewFrame();
@@ -281,6 +315,14 @@ int main(int, char**) {
                     (int)pathResult.points.size(),
                     pathResult.totalCost);
 
+        //INFLUENCE
+        ImGui::Separator();
+        ImGui::Checkbox("Show Influence", &showInfluence);
+        ImGui::Checkbox("Influence gated by LOS", &influenceSettings.gateByLOS);
+        ImGui::SliderFloat("Influence Range", &influenceSettings.maxRange, 1.0f, 20.0f);
+        ImGui::SliderFloat("Base Threat", &influenceSettings.baseThreat, 0.1f, 5.0f);
+        if (ImGui::Button("Recompute Influence"))
+            influenceDirty = true;
 
         //REACH
         ImGui::Separator();
@@ -363,6 +405,20 @@ int main(int, char**) {
                         Uint8 a = (Uint8)(80 + 120 * tNorm);
                         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
                         DrawFilledRect(renderer, sx, sy, tileSize, tileSize, 70, 140, 90, a);
+                        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+                    }
+                }
+
+                // Influence heatmap
+                if (showInfluence && influence.maxThreat > 0.0001f)
+                {
+                    int id = y * map.Width() + x;
+                    float t = influence.threat[id] / influence.maxThreat;
+                    if (t > 0.01f)
+                    {
+                        Uint8 a = (Uint8)(200 * t);
+                        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                        DrawFilledRect(renderer, sx, sy, tileSize, tileSize, 200, 60, 60, a);
                         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
                     }
                 }

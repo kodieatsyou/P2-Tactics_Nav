@@ -12,6 +12,7 @@ add_library(tactics_nav
     src/Pathfinding.cpp
     src/Reachability.cpp
     src/LOS.cpp
+    src/InfluenceField.cpp
 )
 
 target_include_directories(tactics_nav PUBLIC include)

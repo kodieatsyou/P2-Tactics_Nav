@@ -84,6 +84,14 @@ build CMakeFiles/tactics_nav.dir/src/LOS.cpp.o: CXX_COMPILER__tactics_nav_unscan
   OBJECT_FILE_DIR = CMakeFiles/tactics_nav.dir/src
   TARGET_SUPPORT_DIR = CMakeFiles/tactics_nav.dir
 
+build CMakeFiles/tactics_nav.dir/src/InfluenceField.cpp.o: CXX_COMPILER__tactics_nav_unscanned_ /run/media/tanner/Whiterun/Soupbox/Project$ Folders/LarianPortfolio/P2-Tactics_Nav/src/InfluenceField.cpp || cmake_object_order_depends_target_tactics_nav
+  DEP_FILE = CMakeFiles/tactics_nav.dir/src/InfluenceField.cpp.o.d
+  FLAGS = -std=gnu++20
+  INCLUDES = -I"/run/media/tanner/Whiterun/Soupbox/Project Folders/LarianPortfolio/P2-Tactics_Nav/include"
+  OBJECT_DIR = CMakeFiles/tactics_nav.dir
+  OBJECT_FILE_DIR = CMakeFiles/tactics_nav.dir/src
+  TARGET_SUPPORT_DIR = CMakeFiles/tactics_nav.dir
+
 
 # =============================================================================
 # Link build statements for STATIC_LIBRARY target tactics_nav
@@ -92,7 +100,7 @@ build CMakeFiles/tactics_nav.dir/src/LOS.cpp.o: CXX_COMPILER__tactics_nav_unscan
 #############################################
 # Link the static library libtactics_nav.a
 
-build libtactics_nav.a: CXX_STATIC_LIBRARY_LINKER__tactics_nav_ CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.o CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o CMakeFiles/tactics_nav.dir/src/Reachability.cpp.o CMakeFiles/tactics_nav.dir/src/LOS.cpp.o
+build libtactics_nav.a: CXX_STATIC_LIBRARY_LINKER__tactics_nav_ CMakeFiles/tactics_nav.dir/src/GridMap.cpp.o CMakeFiles/tactics_nav.dir/src/DynamicOccupancy.cpp.o CMakeFiles/tactics_nav.dir/src/Pathfinding.cpp.o CMakeFiles/tactics_nav.dir/src/Reachability.cpp.o CMakeFiles/tactics_nav.dir/src/LOS.cpp.o CMakeFiles/tactics_nav.dir/src/InfluenceField.cpp.o
   OBJECT_DIR = CMakeFiles/tactics_nav.dir
   POST_BUILD = :
   PRE_LINK = :
