@@ -9,10 +9,45 @@
 #include "tn/Reachability.h"
 #include "tn/LOS.h"
 #include "tn/InfluenceField.h"
+#include "tn/TacticalEval.h"
 
 #include <imgui.h>
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_sdlrenderer2.h>
+
+static std::vector<tn::IVec2> ReconstructPathFromParents(
+    tn::IVec2 start,
+    tn::IVec2 target,
+    const std::vector<int> &parent,
+    int width)
+{
+    std::vector<tn::IVec2> path;
+    int startIdx = start.y * width + start.x;
+    int cur = target.y * width + target.x;
+
+    if (cur < 0 || cur >= (int)parent.size()){
+        return path;
+    }
+
+
+    // Walk backwards until start or -1
+    while (cur != -1)
+    {
+        path.push_back({cur % width, cur / width});
+        if (cur == startIdx)
+            break;
+        cur = parent[cur];
+    }
+
+    if (path.empty() || path.back().x != start.x || path.back().y != start.y)
+    {
+        path.clear(); // unreachable or disconnected
+        return path;
+    }
+
+    std::reverse(path.begin(), path.end());
+    return path;
+}
 
 static tn::IVec2 ScreenToTile(int mouseX, int mouseY, int tileSize, int originX, int originY) {
     int x = (mouseX - originX) / tileSize;
@@ -147,6 +182,18 @@ int main(int, char**) {
     bool influenceDirty = true;
     bool showInfluence = true;
 
+    // Tactical toggles
+    bool showBestTile = true;
+    bool showTopN = true;
+    tn::UnitSpecs selfSpecs{};
+    selfSpecs.weaponRange = 8;
+    tn::EvalWeights evalW{};
+    tn::TacticalSettings tactS{};
+    tactS.topN = 5;
+    tn::IVec2 objective = goal;
+    tn::TacticalResult tactResult{};
+    bool tactDirty = true;
+
     int tileSize = 22;
     int originX = 20;
     int originY = 20;
@@ -179,6 +226,7 @@ int main(int, char**) {
 
                 const bool shift = (SDL_GetModState() & KMOD_SHIFT) != 0;
                 const bool ctrl = (SDL_GetModState() & KMOD_CTRL) != 0;
+                const bool alt = (SDL_GetModState() & KMOD_ALT) != 0;
 
                 //Shift to use path tools
                 if (shift)
@@ -191,6 +239,7 @@ int main(int, char**) {
                             pathDirty = true;
                             reachDirty = true;
                             influenceDirty = true;
+                            tactDirty = true;
                         }
                     }
                     else if (e.button.button == SDL_BUTTON_RIGHT)
@@ -201,6 +250,7 @@ int main(int, char**) {
                             pathDirty = true;
                             reachDirty = true;
                             influenceDirty = true;
+                            tactDirty = true;
                         }
                     }
                     continue;
@@ -211,6 +261,17 @@ int main(int, char**) {
                 {
                     enemies.push_back({t, 1.0f});
                     influenceDirty = true;
+                    continue;
+                }
+
+                //Alt to place goal
+                if (alt && e.button.button == SDL_BUTTON_LEFT)
+                {
+                    if (map.InBounds(t) && !map.IsBlockedStatic(t))
+                    {
+                        objective = t;
+                        tactDirty = true;
+                    }
                     continue;
                 }
 
@@ -227,6 +288,7 @@ int main(int, char**) {
                     pathDirty = true;
                     reachDirty = true;
                     influenceDirty = true;
+                    tactDirty = true;
                 }
                 else if (e.button.button == SDL_BUTTON_RIGHT)
                 {
@@ -237,6 +299,7 @@ int main(int, char**) {
                         pathDirty = true;
                         reachDirty = true;
                         influenceDirty = true;
+                        tactDirty = true;
                     }
                 }
             }
@@ -256,6 +319,7 @@ int main(int, char**) {
                     pathDirty = true;
                     reachDirty = true;
                     influenceDirty = true;
+                    tactDirty = true;
                 }
 
                 if (buttons & SDL_BUTTON_RMASK)
@@ -265,6 +329,7 @@ int main(int, char**) {
                         pathDirty = true;
                         reachDirty = true;
                         influenceDirty = true;
+                        tactDirty = true;
                     }
                 }
             }
@@ -286,6 +351,21 @@ int main(int, char**) {
         {
             influence = tn::ComputeInfluenceField(map, occ, enemies, influenceSettings);
             influenceDirty = false;
+        }
+
+        if (tactDirty)
+        {
+            tactResult = tn::EvaluateBestTile(
+                map, occ,
+                start,
+                selfSpecs,
+                enemies,
+                objective,
+                reachableSet,
+                influence,
+                evalW,
+                tactS);
+            tactDirty = false;
         }
 
         ImGui_ImplSDLRenderer2_NewFrame();
@@ -314,6 +394,54 @@ int main(int, char**) {
                     pathResult.reachedGoal ? "reached" : "partial",
                     (int)pathResult.points.size(),
                     pathResult.totalCost);
+
+        //TACTICAL EVAL
+        ImGui::Separator();
+        ImGui::Checkbox("Show Best Tile", &showBestTile);
+        ImGui::Checkbox("Show Top-N", &showTopN);
+
+        ImGui::SliderInt("Top N", &tactS.topN, 1, 10);
+        ImGui::SliderInt("Weapon Range", &selfSpecs.weaponRange, 1, 25);
+
+        ImGui::Text("Objective: (%d,%d)", objective.x, objective.y);
+        ImGui::Text("Alt+LMB to set objective");
+
+        ImGui::Separator();
+        ImGui::Text("Weights");
+        ImGui::SliderFloat("w_cover", &evalW.w_cover, 0.0f, 5.0f);
+        ImGui::SliderFloat("w_threat", &evalW.w_threat, 0.0f, 8.0f);
+        ImGui::SliderFloat("w_attack", &evalW.w_attack, 0.0f, 5.0f);
+        ImGui::SliderFloat("w_objective", &evalW.w_objective, 0.0f, 5.0f);
+        ImGui::SliderFloat("w_moveCost", &evalW.w_moveCost, 0.0f, 5.0f);
+        ImGui::SliderFloat("w_mobility", &evalW.w_mobility, 0.0f, 2.0f);
+
+        if (ImGui::IsAnyItemActive())
+            tactDirty = true;
+
+        if (tactResult.hasResult)
+        {
+            ImGui::Separator();
+            ImGui::Text("Best: (%d,%d) total=%.3f",
+                        tactResult.best.tile.x, tactResult.best.tile.y, tactResult.best.score.total);
+            ImGui::Text(" cover=%.3f threat=%.3f attack=%.3f obj=%.3f move=%.3f mob=%.3f",
+                        tactResult.best.score.cover,
+                        tactResult.best.score.threat,
+                        tactResult.best.score.attack,
+                        tactResult.best.score.objective,
+                        tactResult.best.score.moveCost,
+                        tactResult.best.score.mobility);
+
+            if (showTopN)
+            {
+                ImGui::Separator();
+                ImGui::Text("Top-%d:", (int)tactResult.top.size());
+                for (int i = 0; i < (int)tactResult.top.size(); ++i)
+                {
+                    const auto &st = tactResult.top[i];
+                    ImGui::Text("%d) (%d,%d) total=%.3f", i + 1, st.tile.x, st.tile.y, st.score.total);
+                }
+            }
+        }
 
         //INFLUENCE
         ImGui::Separator();
@@ -425,6 +553,22 @@ int main(int, char**) {
 
                 if(showGridLines) {
                     DrawRect(renderer, sx, sy, tileSize, tileSize, 25, 25, 25, 255);
+                }
+
+                if (showBestTile && tactResult.hasResult)
+                {
+                    // Outline best tile
+                    tn::IVec2 bt = tactResult.best.tile;
+                    int sx = originX + bt.x * tileSize;
+                    int sy = originY + bt.y * tileSize;
+
+                    SDL_SetRenderDrawColor(renderer, 251, 43, 245, 255);
+                    SDL_Rect rc{sx, sy, tileSize, tileSize};
+                    SDL_RenderDrawRect(renderer, &rc);
+
+                    // Draw path from start to best tile using reach parents
+                    auto p = ReconstructPathFromParents(start, bt, reachableSet.parent, map.Width());
+                    DrawPolyline(renderer, p, tileSize, originX, originY);
                 }
             }
         }

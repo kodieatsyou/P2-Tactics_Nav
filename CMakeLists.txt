@@ -13,6 +13,7 @@ add_library(tactics_nav
     src/Reachability.cpp
     src/LOS.cpp
     src/InfluenceField.cpp
+    src/TacticalEval.cpp
 )
 
 target_include_directories(tactics_nav PUBLIC include)
