@@ -9,6 +9,12 @@
 
 namespace tn {
 
+    enum class CoverMode
+    {
+        Directional = 0,
+        LOS = 1
+    };
+
     struct UnitSpecs {
         int weaponRange = 8; // In tiles
         float preferRangeMin = 0; //Optional
@@ -49,7 +55,7 @@ namespace tn {
             .includeEndpoints = false
         };
 
-        bool useDirectionalCover = true;
+        CoverMode coverMode = CoverMode::LOS;
 
         //Treat objectiveScore as closer is better
         bool objectiveIsCloserIsBetter = true;

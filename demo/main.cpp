@@ -193,6 +193,7 @@ int main(int, char**) {
     tn::IVec2 objective = goal;
     tn::TacticalResult tactResult{};
     bool tactDirty = true;
+    tactS.coverMode = tn::CoverMode::LOS;
 
     int tileSize = 22;
     int originX = 20;
@@ -405,6 +406,21 @@ int main(int, char**) {
 
         ImGui::Text("Objective: (%d,%d)", objective.x, objective.y);
         ImGui::Text("Alt+LMB to set objective");
+
+        ImGui::Separator();
+        ImGui::Text("Cover Mode");
+        int coverMode = (tactS.coverMode == tn::CoverMode::Directional) ? 0 : 1;
+        if (ImGui::RadioButton("Directional", coverMode == 0))
+        {
+            tactS.coverMode = tn::CoverMode::Directional;
+            tactDirty = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::RadioButton("LOS-based", coverMode == 1))
+        {
+            tactS.coverMode = tn::CoverMode::LOS;
+            tactDirty = true;
+        }
 
         ImGui::Separator();
         ImGui::Text("Weights");

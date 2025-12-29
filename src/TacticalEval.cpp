@@ -21,6 +21,24 @@ namespace tn {
         return IVec2{dx, dy};
     }
 
+    static bool IsAdjacent(tn::IVec2 a, tn::IVec2 b)
+    {
+        int dx = std::abs(a.x - b.x);
+        int dy = std::abs(a.y - b.y);
+        return (dx <= 1 && dy <= 1) && !(dx == 0 && dy == 0);
+    }
+
+    static float Clamp01(float v)
+    {
+        if (v < 0.0f) {
+            return 0.0f;
+        }
+        if (v > 1.0f){
+            return 1.0f;
+        }
+        return v;
+    }
+
     static float DirectionalCoverVsEnemy(const GridMap& map, IVec2 tile, IVec2 enemyPos) {
         IVec2 dir = QuantizeDirection(tile, enemyPos);
         if(dir.x == 0 && dir.y == 0){
@@ -59,6 +77,59 @@ namespace tn {
             open++;
         }
         return float(open) / 8.0f;
+    }
+
+    static float LOSCoverVsEnemy(
+        const tn::GridMap &map,
+        const tn::DynamicOccupancy &occ,
+        tn::IVec2 tile,
+        tn::IVec2 enemyPos,
+        const tn::LOSSettings &los)
+    {
+        if (tile == enemyPos){
+            return 0.0f;
+        }
+
+        tn::LOSRay ray = tn::TraceLOS(map, occ, enemyPos, tile, los);
+        if (!ray.blocked){
+            return 0.0f;
+        }
+
+        if (IsAdjacent(ray.blockedAt, tile)){
+            return 1.0f;
+        }
+
+        int idxBlocked = -1;
+        int idxTile = -1;
+
+        for (int i = 0; i < (int)ray.cells.size(); ++i)
+        {
+            const auto &c = ray.cells[i];
+            if (c == ray.blockedAt)
+                idxBlocked = i;
+            if (c == tile)
+                idxTile = i;
+        }
+
+        if (idxBlocked < 0 || idxTile < 0 || idxBlocked >= idxTile)
+        {
+            float dx = float(tile.x - ray.blockedAt.x);
+            float dy = float(tile.y - ray.blockedAt.y);
+            float dist = std::sqrt(dx * dx + dy * dy);
+
+            float cover = 1.0f / (1.0f + 0.75f * dist);
+            return Clamp01(cover);
+        }
+
+        int stepsFromBlockToTile = idxTile - idxBlocked;
+
+        const float k = 0.55f;
+        float cover = 1.0f / (1.0f + k * float(stepsFromBlockToTile - 1));
+
+        if (stepsFromBlockToTile == 2){
+            cover = std::min(1.0f, cover + 0.15f);
+        }
+        return Clamp01(cover);
     }
 
     TacticalResult EvaluateBestTile(
@@ -123,10 +194,26 @@ namespace tn {
                 }
 
                 float bestCover = 0.0f;
-                if(settings.useDirectionalCover && !enemies.empty()) {
-                    for(const auto& e : enemies) {
-                        float c = DirectionalCoverVsEnemy(map, p, e.pos);
-                        bestCover = std::max(bestCover, c);
+                if (!enemies.empty())
+                {
+                    if (settings.coverMode == CoverMode::Directional)
+                    {
+                        for (const auto &e : enemies)
+                        {
+                            float c = DirectionalCoverVsEnemy(map, p, e.pos);
+                            bestCover = std::max(bestCover, c);
+                        }
+                    }
+                    else
+                    { // CoverMode LOS
+                        tn::LOSSettings coverLOS = settings.losAttack;
+                        coverLOS.blockByOccupancy = false;
+
+                        for (const auto &e : enemies)
+                        {
+                            float c = LOSCoverVsEnemy(map, occ, p, e.pos, coverLOS);
+                            bestCover = std::max(bestCover, c);
+                        }
                     }
                 }
                 b.cover = bestCover;
@@ -148,24 +235,12 @@ namespace tn {
 
                 float dObj = Distance(p, objective);
                 float obj01 = 1.0f - (dObj / maxObjDist);
-                if(obj01 < 0.0f) {
-                    obj01 = 0.0f;
-                }
-                if(obj01 > 1.0f) {
-                    obj01 = 1.0f;
-                }
+                obj01 = Clamp01(obj01);
                 b.objective = settings.objectiveIsCloserIsBetter ? obj01 : (1.0f - obj01);
 
                 float cMove = reachable.costTo[id];
                 float move01 = 1.0f - (cMove / maxMoveCost);
-                if (move01 < 0.0f)
-                {
-                    move01 = 0.0f;
-                }
-                if (move01 > 1.0f)
-                {
-                    move01 = 1.0f;
-                }
+                move01 = Clamp01(move01);
                 b.moveCost = move01;
 
                 b.mobility = MobilityScoreLocal(map, occ, p);
