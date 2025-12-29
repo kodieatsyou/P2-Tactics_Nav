@@ -98,3 +98,22 @@ The included SDL2 demo acts as a **tactical debugger**, not a game.
 - Top-N scoring breakdown (ImGui)
 
 The viewer is intentionally minimal and exists to **validate and reason about the systems**.
+
+## Build Instructions
+
+### Requirements
+- C++20 compiler
+- CMake ≥ 3.20
+- SDL2 (system library)
+- Ninja (recommended)
+
+### Build
+```bash
+cmake -S . -B build -G Ninja
+cmake --build build
+```
+
+### Run Demo
+```bash
+./build/tactics_demo
+```
